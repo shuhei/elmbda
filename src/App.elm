@@ -63,6 +63,19 @@ reduce exp =
             apply func arg
 
 
+printExpression : Expression -> String
+printExpression exp =
+    case exp of
+        Name name ->
+            name
+
+        Function arg body ->
+            "λ" ++ arg ++ "." ++ printExpression body
+
+        Application func arg ->
+            "(" ++ printExpression func ++ " " ++ printExpression arg ++ ")"
+
+
 
 ---- MODEL ----
 
