@@ -1,3 +1,9 @@
+# elmda (work in progress)
+
+My tiny attempt to implement lambda calculus with Elm. It will progress as I read [An Introduction to Functional Programming Through Lambda Calculus](http://store.doverpublications.com/0486478831.html).
+
+--
+
 This project is bootstrapped with [Create Elm App](https://github.com/halfzebra/create-elm-app).
 
 Below you will find some information on how to perform basic tasks.  
