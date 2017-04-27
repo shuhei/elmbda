@@ -1,5 +1,6 @@
 module Combo exposing (..)
 
+import Char
 
 type alias Parser a =
     String -> Maybe ( a, String )
@@ -102,6 +103,36 @@ item : Parser Char
 item =
     String.uncons
 
+sat : (Char -> Bool) -> Parser Char
+sat p =
+    item >>= (\x -> if p x then return x else failure)
+
 char : Char -> Parser Char
 char c =
-    item >>= (\x -> if x == c then return c else failure)
+    sat ((==) c)
+
+alpha : Parser Char
+alpha =
+    sat (\x -> Char.isLower x || Char.isUpper x)
+
+string : String -> Parser String
+string s =
+    case String.uncons s of
+        Just (x, xs) ->
+            return String.cons <*> char x <*> string xs
+        Nothing ->
+            failure
+
+many : Parser a -> Parser (List a)
+many p =
+    \inp ->
+          case parse p inp of
+              Just (v, out) ->
+                  parse (return ((::) v) <*> many p) out
+              Nothing ->
+                  Just ([], inp)
+
+
+many1 : Parser a -> Parser (List a)
+many1 p =
+    return (::) <*> p <*> many p

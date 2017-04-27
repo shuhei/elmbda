@@ -35,11 +35,6 @@ all =
                 Expect.equal
                     (parse (failure <|> failure) "abc")
                     Nothing
-        , test "item" <|
-            \() ->
-                Expect.equal
-                    (parse item "hello")
-                    (Just ( 'h', "ello" ))
         , test "map" <|
             \() ->
                 Expect.equal
@@ -60,4 +55,49 @@ all =
                 Expect.equal
                     (parse (item <* item) "hello")
                     (Just ('h', "llo"))
+        , test "item" <|
+            \() ->
+                Expect.equal
+                    (parse item "hello")
+                    (Just ( 'h', "ello" ))
+        , test "char ok" <|
+            \() ->
+                Expect.equal
+                    (parse (char 'h') "hello")
+                    (Just ( 'h', "ello" ))
+        , test "char ng" <|
+            \() ->
+                Expect.equal
+                    (parse (char 'z') "hello")
+                    Nothing
+        , test "alpha ok" <|
+            \() ->
+                Expect.equal
+                    (parse alpha "foo")
+                    (Just ( 'f', "oo" ))
+        , test "alpha ng" <|
+            \() ->
+                Expect.equal
+                    (parse alpha "123")
+                    Nothing
+        , test "many" <|
+            \() ->
+                Expect.equal
+                    (parse (many alpha) "foo bar")
+                    (Just ( ['f', 'o', 'o'], " bar"))
+        , test "many empty" <|
+            \() ->
+                Expect.equal
+                    (parse (many alpha) "123")
+                    (Just ( [], "123"))
+        , test "many1 ok" <|
+            \() ->
+                Expect.equal
+                    (parse (many1 alpha) "foo bar")
+                    (Just ( ['f', 'o', 'o'], " bar"))
+        , test "many1 ng" <|
+            \() ->
+                Expect.equal
+                    (parse (many1 alpha) "123")
+                    Nothing
         ]
