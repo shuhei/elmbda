@@ -15,18 +15,26 @@ failure =
     \inp -> Nothing
 
 
-item : Parser Char
-item =
-    String.uncons
-
-
 parse : Parser a -> String -> Maybe ( a, String )
 parse p inp =
     p inp
 
+or : Parser a -> Parser a -> Parser a
+or p q =
+    \inp ->
+        case parse p inp of
+            Nothing ->
+                parse q inp
+            x ->
+                x
 
-andThen : (a -> Parser b) -> Parser a -> Parser b
-andThen f p =
+(<|>) : Parser a -> Parser a -> Parser a
+(<|>) =
+    or
+
+-- Monad!
+(>>=) : Parser a -> (a -> Parser b) -> Parser b
+(>>=) p f =
     \inp ->
         case parse p inp of
             Nothing ->
@@ -36,11 +44,12 @@ andThen f p =
                 parse (f v) out
 
 
-(>>=) : Parser a -> (a -> Parser b) -> Parser b
-(>>=) =
-    flip andThen
+andThen : (a -> Parser b) -> Parser a -> Parser b
+andThen =
+    flip (>>=)
 
 
+-- Functor!
 map : (a -> b) -> Parser a -> Parser b
 map f p =
     \inp ->
@@ -57,8 +66,9 @@ map f p =
     flip map
 
 
-andMap : Parser a -> Parser (a -> b) -> Parser b
-andMap p pf =
+-- Applicative!
+(<*>) : Parser (a -> b) -> Parser a -> Parser b
+(<*>) pf p =
     \inp ->
         case parse pf inp of
             Nothing ->
@@ -73,6 +83,25 @@ andMap p pf =
                         Just ( f v, out2 )
 
 
-(<*>) : Parser (a -> b) -> Parser a -> Parser b
-(<*>) =
-    flip andMap
+andMap : Parser a -> Parser (a -> b) -> Parser b
+andMap =
+    flip (<*>)
+
+(<*) : Parser a -> Parser b -> Parser a
+(<*) pa pb =
+    return (\x y -> x) <*> pa <*> pb
+
+(*>) : Parser a -> Parser b -> Parser b
+(*>) pa pb =
+    return (\x y -> y) <*> pa <*> pb
+
+-- Parsers
+
+
+item : Parser Char
+item =
+    String.uncons
+
+char : Char -> Parser Char
+char c =
+    item >>= (\x -> if x == c then return c else failure)

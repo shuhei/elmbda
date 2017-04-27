@@ -4,8 +4,8 @@ import Test exposing (..)
 import Expect
 import String
 import App exposing (..)
-import ComboTests exposing (..)
-import LambdaTests exposing (..)
+import ComboTests
+import LambdaTests
 
 
 all : Test
