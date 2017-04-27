@@ -123,6 +123,7 @@ string s =
         Nothing ->
             failure
 
+
 many : Parser a -> Parser (List a)
 many p =
     \inp ->
@@ -136,3 +137,18 @@ many p =
 many1 : Parser a -> Parser (List a)
 many1 p =
     return (::) <*> p <*> many p
+
+
+manyS : Parser Char -> Parser String
+manyS p =
+    \inp ->
+          case parse p inp of
+              Just (v, out) ->
+                  parse (return ((String.cons) v) <*> manyS p) out
+              Nothing ->
+                  Just ("", inp)
+
+
+manyS1 : Parser Char -> Parser String
+manyS1 p =
+    return String.cons <*> p <*> manyS p

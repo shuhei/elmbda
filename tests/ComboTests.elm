@@ -100,4 +100,24 @@ all =
                 Expect.equal
                     (parse (many1 alpha) "123")
                     Nothing
+        , test "manyS" <|
+            \() ->
+                Expect.equal
+                    (parse (manyS alpha) "foo bar")
+                    (Just ( "foo", " bar"))
+        , test "manyS empty" <|
+            \() ->
+                Expect.equal
+                    (parse (manyS alpha) "123")
+                    (Just ( "", "123"))
+        , test "manyS1 ok" <|
+            \() ->
+                Expect.equal
+                    (parse (manyS1 alpha) "foo bar")
+                    (Just ( "foo", " bar"))
+        , test "manyS1 ng" <|
+            \() ->
+                Expect.equal
+                    (parse (manyS1 alpha) "123")
+                    Nothing
         ]
