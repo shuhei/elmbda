@@ -12,6 +12,31 @@ all =
         [ test "App.model.message should be set properly" <|
             \() ->
                 Expect.equal (Tuple.first (App.init "../src/logo.svg") |> .message) "Your Elm App is working!"
+        , describe "parser"
+            [ test "return" <|
+                \() ->
+                    Expect.equal
+                        (parse (return 1) "abc")
+                        (Just (1, "abc"))
+            , test "failur" <|
+                \() ->
+                    Expect.equal
+                        (parse failure "abc")
+                        Nothing
+            , test "item" <|
+                \() ->
+                    Expect.equal
+                        (item "hello")
+                        (Just ('h', "ello"))
+            , test "andMap" <|
+                \() ->
+                    let p =
+                        item <$> (,) <*> item
+                    in
+                      Expect.equal
+                          (parse p "hello")
+                          (Just (('h', 'e'), "llo"))
+            ]
         , describe "reduce"
             [ test "root name is not reduced" <|
                 \() ->
