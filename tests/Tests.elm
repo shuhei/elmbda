@@ -6,6 +6,7 @@ import String
 import App exposing (..)
 import ComboTests
 import LambdaTests
+import LambdaParserTests
 
 
 all : Test
@@ -16,4 +17,5 @@ all =
                 Expect.equal (Tuple.first (App.init "../src/logo.svg") |> .message) "Your Elm App is working!"
         , ComboTests.all
         , LambdaTests.all
+        , LambdaParserTests.all
         ]

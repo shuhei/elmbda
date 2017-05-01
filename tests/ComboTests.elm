@@ -39,22 +39,22 @@ all =
             \() ->
                 Expect.equal
                     (parse (item <$> Char.toUpper) "foo")
-                    (Just ('F', "oo"))
+                    (Just ( 'F', "oo" ))
         , test "<*>" <|
             \() ->
                 Expect.equal
                     (parse (return (,) <*> item <*> item) "hello")
-                    (Just (( 'h', 'e' ), "llo" ))
+                    (Just ( ( 'h', 'e' ), "llo" ))
         , test "<*" <|
             \() ->
                 Expect.equal
                     (parse (item *> item) "hello")
-                    (Just ('e', "llo"))
+                    (Just ( 'e', "llo" ))
         , test "*>" <|
             \() ->
                 Expect.equal
                     (parse (item <* item) "hello")
-                    (Just ('h', "llo"))
+                    (Just ( 'h', "llo" ))
         , test "item" <|
             \() ->
                 Expect.equal
@@ -84,17 +84,17 @@ all =
             \() ->
                 Expect.equal
                     (parse (many alpha) "foo bar")
-                    (Just ( ['f', 'o', 'o'], " bar"))
+                    (Just ( [ 'f', 'o', 'o' ], " bar" ))
         , test "many empty" <|
             \() ->
                 Expect.equal
                     (parse (many alpha) "123")
-                    (Just ( [], "123"))
+                    (Just ( [], "123" ))
         , test "many1 ok" <|
             \() ->
                 Expect.equal
                     (parse (many1 alpha) "foo bar")
-                    (Just ( ['f', 'o', 'o'], " bar"))
+                    (Just ( [ 'f', 'o', 'o' ], " bar" ))
         , test "many1 ng" <|
             \() ->
                 Expect.equal
@@ -104,17 +104,17 @@ all =
             \() ->
                 Expect.equal
                     (parse (manyS alpha) "foo bar")
-                    (Just ( "foo", " bar"))
+                    (Just ( "foo", " bar" ))
         , test "manyS empty" <|
             \() ->
                 Expect.equal
                     (parse (manyS alpha) "123")
-                    (Just ( "", "123"))
+                    (Just ( "", "123" ))
         , test "manyS1 ok" <|
             \() ->
                 Expect.equal
                     (parse (manyS1 alpha) "foo bar")
-                    (Just ( "foo", " bar"))
+                    (Just ( "foo", " bar" ))
         , test "manyS1 ng" <|
             \() ->
                 Expect.equal
