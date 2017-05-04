@@ -1,4 +1,4 @@
-# elmda (work in progress)
+# elmbda (work in progress)
 
 My tiny attempt to implement lambda calculus with Elm. It will progress as I read [An Introduction to Functional Programming Through Lambda Calculus](http://store.doverpublications.com/0486478831.html).
 
