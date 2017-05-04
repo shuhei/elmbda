@@ -28,3 +28,13 @@ application =
 expression : Parser Expression
 expression =
     lazy <| \() -> name <|> function <|> application
+
+
+parseLambda : String -> Maybe Expression
+parseLambda inp =
+    case parse expression inp of
+        Just ( exp, "" ) ->
+            Just exp
+
+        _ ->
+            Nothing

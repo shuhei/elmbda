@@ -1,21 +1,24 @@
 module App exposing (..)
 
-import Html exposing (Html, text, div, img, textarea)
-import Html.Attributes exposing (src)
+import Html exposing (Html, text, h1, div, img, textarea)
+import Html.Attributes exposing (src, value)
+import Html.Events exposing (onInput)
+import Lambda exposing (..)
+import LambdaParser exposing (..)
 
 
 ---- MODEL ----
 
 
 type alias Model =
-    { message : String
-    , logo : String
+    { text : String
+    , result : Maybe Expression
     }
 
 
 init : String -> ( Model, Cmd Msg )
 init path =
-    ( { message = "Your Elm App is working!", logo = path }, Cmd.none )
+    ( { text = "", result = Nothing }, Cmd.none )
 
 
 
@@ -24,11 +27,19 @@ init path =
 
 type Msg
     = NoOp
+    | TextInput String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        NoOp ->
+            ( model, Cmd.none )
+
+        TextInput text ->
+            ( { model | text = text, result = parseLambda text }
+            , Cmd.none
+            )
 
 
 
@@ -37,11 +48,20 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ img [ src model.logo ] []
-        , div [] [ text model.message ]
-        , textarea [] []
-        ]
+    let
+        result =
+            case model.result of
+                Nothing ->
+                    div [] [ text "-" ]
+
+                Just exp ->
+                    div [] [ text <| toString exp ]
+    in
+        div []
+            [ h1 [] [ text "Elmbda" ]
+            , textarea [ onInput TextInput, value model.text ] []
+            , result
+            ]
 
 
 
