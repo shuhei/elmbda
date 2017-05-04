@@ -1,8 +1,8 @@
 module App exposing (..)
 
-import Html exposing (Html, text, h1, div, img, textarea)
+import Html exposing (Html, text, h1, div, button, textarea)
 import Html.Attributes exposing (src, value)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onInput, onClick)
 import Lambda exposing (..)
 import LambdaParser exposing (..)
 
@@ -28,6 +28,7 @@ init path =
 type Msg
     = NoOp
     | TextInput String
+    | Reduce
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -38,6 +39,11 @@ update msg model =
 
         TextInput text ->
             ( { model | text = text, result = parseLambda text }
+            , Cmd.none
+            )
+
+        Reduce ->
+            ( { model | result = Maybe.andThen (Result.toMaybe << reduce) model.result }
             , Cmd.none
             )
 
@@ -61,6 +67,7 @@ view model =
             [ h1 [] [ text "Elmbda" ]
             , textarea [ onInput TextInput, value model.text ] []
             , result
+            , button [ onClick Reduce ] [ text "Reduce" ]
             ]
 
 
