@@ -1,7 +1,7 @@
 module App exposing (..)
 
 import Html exposing (Html, text, h1, div, button, textarea)
-import Html.Attributes exposing (src, value)
+import Html.Attributes exposing (src, value, disabled)
 import Html.Events exposing (onInput, onClick)
 import Lambda exposing (..)
 import LambdaParser exposing (..)
@@ -61,13 +61,20 @@ view model =
                     div [] [ text "-" ]
 
                 Just exp ->
-                    div [] [ text <| toString exp ]
+                    div [] [ text <| printExpression exp ]
+        isOK =
+            case model.result of
+                Nothing ->
+                    False
+
+                Just _ ->
+                    True
     in
         div []
             [ h1 [] [ text "Elmbda" ]
             , textarea [ onInput TextInput, value model.text ] []
             , result
-            , button [ onClick Reduce ] [ text "Reduce" ]
+            , button [ onClick Reduce, disabled (not isOK) ] [ text "Reduce" ]
             ]
 
 
