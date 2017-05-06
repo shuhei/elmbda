@@ -12,10 +12,7 @@ import LambdaParserTests
 all : Test
 all =
     describe "A Test Suite"
-        [ test "App.model.message should be set properly" <|
-            \() ->
-                Expect.equal (Tuple.first (App.init "../src/logo.svg") |> .message) "Your Elm App is working!"
-        , ComboTests.all
+        [ ComboTests.all
         , LambdaTests.all
         , LambdaParserTests.all
         ]
