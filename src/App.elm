@@ -22,6 +22,7 @@ examples : List String
 examples =
     [ "(\\s.(s s) \\x.x)"
     , "(\\x.(\\f.\\a.(f a) x) foo)"
+    , "(((\\x.\\y.\\z.((x z) (y z)) \\x.\\y.x) \\x.\\y.x) foo)"
     ]
 
 
