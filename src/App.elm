@@ -13,6 +13,7 @@ import LambdaParser exposing (..)
 type alias Model =
     { text : String
     , results : List Expression
+    , done : Bool
     , examples : List String
     }
 
@@ -26,7 +27,7 @@ examples =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { text = "", results = [], examples = examples }, Cmd.none )
+    ( { text = "", results = [], done = False, examples = examples }, Cmd.none )
 
 
 
@@ -52,7 +53,7 @@ type Msg
 
 setText : Model -> String -> Model
 setText model text =
-    { model | text = text, results = toList <| parseLambda text }
+    { model | text = text, done = False, results = toList <| parseLambda text }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -69,20 +70,23 @@ update msg model =
 
         Reduce ->
             let
-                results =
+                updated =
                     case model.results of
                         [] ->
-                            []
+                            model
 
                         r :: rs ->
                             case reduce r of
                                 Ok exp ->
-                                    (exp :: model.results)
+                                    if exp == r then
+                                        { model | done = True }
+                                    else
+                                        { model | results = exp :: model.results }
 
                                 _ ->
-                                    model.results
+                                    { model | done = True }
             in
-                ( { model | results = results }, Cmd.none )
+                ( updated, Cmd.none )
 
 
 
@@ -112,7 +116,7 @@ view model =
             [ h1 [] [ text "Elmbda" ]
             , textarea [ onInput TextInput, value model.text ] []
             , div [ class "results" ] results
-            , button [ onClick Reduce, disabled (List.isEmpty model.results) ] [ text "Reduce" ]
+            , button [ onClick Reduce, disabled (model.done || List.isEmpty model.results) ] [ text "Reduce" ]
             , h2 [] [ text "Examples" ]
             , ol [ class "examples" ] <| List.map exampleView model.examples
             ]
