@@ -12,17 +12,27 @@ import LambdaParser exposing (..)
 
 type alias Model =
     { text : String
-    , result : Maybe Expression
+    , results : List Expression
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { text = "", result = Nothing }, Cmd.none )
+    ( { text = "", results = [] }, Cmd.none )
 
 
 
 ---- UPDATE ----
+
+
+toList : Maybe a -> List a
+toList m =
+    case m of
+        Just a ->
+            [ a ]
+
+        Nothing ->
+            []
 
 
 type Msg
@@ -38,43 +48,51 @@ update msg model =
             ( model, Cmd.none )
 
         TextInput text ->
-            ( { model | text = text, result = parseLambda text }
+            ( { model | text = text, results = toList <| parseLambda text }
             , Cmd.none
             )
 
         Reduce ->
-            ( { model | result = Maybe.andThen (Result.toMaybe << reduce) model.result }
-            , Cmd.none
-            )
+            let
+                results =
+                    case model.results of
+                        [] ->
+                            []
+
+                        r :: rs ->
+                            case reduce r of
+                                Ok exp ->
+                                    (exp :: model.results)
+
+                                _ ->
+                                    model.results
+            in
+                ( { model | results = results }, Cmd.none )
 
 
 
 ---- VIEW ----
 
 
+resultView : Expression -> Html Msg
+resultView exp =
+    div [ class "result" ] [ text <| printExpression exp ]
+
+
 view : Model -> Html Msg
 view model =
     let
-        result =
-            case model.result of
-                Nothing ->
-                    "-"
-
-                Just exp ->
-                    printExpression exp
-        isOK =
-            case model.result of
-                Nothing ->
-                    False
-
-                Just _ ->
-                    True
+        results =
+            if List.isEmpty model.results then
+                [ div [ class "result" ] [ text "-" ] ]
+            else
+                List.map resultView <| List.reverse model.results
     in
         div [ class "container" ]
             [ h1 [] [ text "Elmbda" ]
             , textarea [ onInput TextInput, value model.text ] []
-            , div [ class "result" ] [ text result ]
-            , button [ onClick Reduce, disabled (not isOK) ] [ text "Reduce" ]
+            , div [ class "results" ] results
+            , button [ onClick Reduce, disabled (List.isEmpty model.results) ] [ text "Reduce" ]
             ]
 
 
