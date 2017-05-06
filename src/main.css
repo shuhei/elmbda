@@ -6,7 +6,37 @@ body {
   color: #293c4b;
 }
 
-img {
-  margin: 20px 0;
-  max-width: 200px;
+.container {
+  width: 50%;
+  margin: 0 auto;
+}
+
+textarea {
+  font-size: 20px;
+  width: 100%;
+  padding: 1em;
+  box-sizing: border-box;
+  font-family: monospace;
+  resize: none;
+  border: 1px solid #abc;
+  outline: none;
+}
+
+.result {
+  font-family: monospace;
+  margin: 20px 0 25px;
+}
+
+button {
+  width: 100%;
+  border: none;
+  display: inline-block;
+  padding: 0.8em;
+  color: #fff;
+  background: #293c4b;
+  font-size: 20px;
+}
+
+button:disabled {
+  background: #ccc;
 }

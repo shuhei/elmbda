@@ -1,7 +1,7 @@
 module App exposing (..)
 
 import Html exposing (Html, text, h1, div, button, textarea)
-import Html.Attributes exposing (src, value, disabled)
+import Html.Attributes exposing (src, value, disabled, class)
 import Html.Events exposing (onInput, onClick)
 import Lambda exposing (..)
 import LambdaParser exposing (..)
@@ -16,8 +16,8 @@ type alias Model =
     }
 
 
-init : String -> ( Model, Cmd Msg )
-init path =
+init : ( Model, Cmd Msg )
+init =
     ( { text = "", result = Nothing }, Cmd.none )
 
 
@@ -58,10 +58,10 @@ view model =
         result =
             case model.result of
                 Nothing ->
-                    div [] [ text "-" ]
+                    "-"
 
                 Just exp ->
-                    div [] [ text <| printExpression exp ]
+                    printExpression exp
         isOK =
             case model.result of
                 Nothing ->
@@ -70,10 +70,10 @@ view model =
                 Just _ ->
                     True
     in
-        div []
+        div [ class "container" ]
             [ h1 [] [ text "Elmbda" ]
             , textarea [ onInput TextInput, value model.text ] []
-            , result
+            , div [ class "result" ] [ text result ]
             , button [ onClick Reduce, disabled (not isOK) ] [ text "Reduce" ]
             ]
 
@@ -82,9 +82,9 @@ view model =
 ---- PROGRAM ----
 
 
-main : Program String Model Msg
+main : Program Never Model Msg
 main =
-    Html.programWithFlags
+    Html.program
         { view = view
         , init = init
         , update = update
