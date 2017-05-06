@@ -12,7 +12,7 @@ name =
 function : Parser Expression
 function =
     return Function
-        |> andMap (char 'λ' *> manyS1 alpha)
+        |> andMap ((char 'λ' <|> char '\\') *> manyS1 alpha)
         |> andMap (char '.' *> expression)
 
 
